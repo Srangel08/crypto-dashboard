@@ -42,3 +42,5 @@ La arquitectura del proyecto se divide en los siguientes módulos:
 * Renderizado dinámico vía Streamlit Cloud
 
 ---
+<img width="1365" height="743" alt="Screenshot 2026-01-22 203503" src="https://github.com/user-attachments/assets/05035f3b-c4f3-4cc9-aa35-289aac5aad4d" />
+
