@@ -3,11 +3,16 @@ from datetime import datetime
 from data_fetcher import get_crypto_data
 from visualizer import plot_crypto
 
-st.set_page_config(page_title="CRYPTO DASHBOARD", layout="wide")
+st.set_page_config(page_title="GLANCE", layout="wide")
 
-# CSS REFINADO
+# CSS REFINADO - AQUÍ ESTÁ EL TRUCO PARA OCULTAR EL MENÚ
 st.markdown("""
     <style>
+    /* 1. OCULTA LA LISTA DE PÁGINAS QUE NO TE GUSTA */
+    [data-testid="stSidebarNav"] {
+        display: none;
+    }
+    
     .stApp { background-color: #0e1117; }
     
     /* BANNER DE CONSULTA REFINADO */
@@ -32,22 +37,9 @@ st.markdown("""
         height: 130px !important;
         display: flex !important;
         flex-direction: column !important;
-        align-items: center !important; /* CENTRADO HORIZONTAL */
-        justify-content: center !important; /* CENTRADO VERTICAL */
+        align-items: center !important;
+        justify-content: center !important;
         text-align: center !important;
-    }
-
-    /* Ajuste para que el valor y el delta también se centren */
-    div[data-testid="stMetricValue"] {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
-    
-    div[data-testid="stMetricDelta"] {
-        display: flex;
-        justify-content: center;
-        width: 100%;
     }
 
     div[data-testid="stMetricValue"] > div {
@@ -65,7 +57,7 @@ st.markdown("""
         text-align: center !important;
     }
     
-    /* TERMINAL EN COLOR BLANCO */
+    /* TÍTULO DE LA TERMINAL */
     .terminal-title {
         color: white !important;
         font-size: 25px;
@@ -75,13 +67,12 @@ st.markdown("""
 
     .block-container { max-width: 95% !important; padding-top: 1.5rem !important; }
     
-    /* Borde del menú lateral */
+    /* Borde neón del menú lateral */
     [data-testid="stSidebar"] { border-right: 2px solid #00ffbb; }
     </style>
     """, unsafe_allow_html=True)
 
 with st.sidebar:
-    # Título TERMINAL en Blanco
     st.markdown("<h2 class='terminal-title'>TERMINAL</h2>", unsafe_allow_html=True)
     st.divider()
     asset = st.selectbox("SELECT ASSET", ["Bitcoin", "Ethereum", "Solana"])
@@ -97,7 +88,6 @@ if btn:
     df = get_crypto_data(tickers[asset], q_date, "monthly" if mode == "Monthly" else "intraday")
     
     if not df.empty:
-        # Fecha de la consulta (último dato disponible)
         query_day = df.index[-1].strftime('%Y-%m-%d')
         
         st.markdown(f"""
@@ -111,7 +101,6 @@ if btn:
         m1, m2, m3 = st.columns(3)
         perf = ((df['Close'].iloc[-1] - df['Open'].iloc[0]) / df['Open'].iloc[0]) * 100
         
-        # Las métricas ahora aparecerán centradas gracias al CSS
         m1.metric("LAST PRICE", f"${df['Close'].iloc[-1]:,.2f}")
         m2.metric("VOLATILITY", f"{(df['Close'].pct_change().std()*100):.2f}%")
         m3.metric("SENTIMENT", "BULLISH" if perf > 0 else "BEARISH", delta=f"{perf:.2f}%")
